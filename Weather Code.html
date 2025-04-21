@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #weather {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>U.S. City Weather Forecast</h1>
+    <input type="text" id="cityInput" placeholder="Enter U.S. city name" />
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="weather"></div>
+
+    <script>
+    async function getWeather() {
+      const city = document.getElementById('cityInput').value;
+        const apiKey = 'c8e667caf8de0b8c9f2fcb6671400236'; // Replace with your OpenWeatherMap API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},US&appid=${apiKey}&units=imperial`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+          const minTemp = data.main.temp_min;
+          const maxTemp = data.main.temp_max;
+          const forecast = data.weather[0].description;
+
+          document.getElementById('weather').innerHTML = `
+            <h2>Weather in ${city}</h2>
+            <p><strong>Forecast:</strong> ${forecast}</p>
+            <p><strong>Min Temp:</strong> ${minTemp}°F</p>
+            <p><strong>Max Temp:</strong> ${maxTemp}°F</p>
+          `;
+        } else {
+          document.getElementById('weather').innerHTML = `<p style="color: red;">City not found. Please try again.</p>`;
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById('weather').innerHTML = `<p style="color: red;">Error fetching weather data.</p>`;
+      }
+    }
+    </script>
+
+</body>
+</html>
